@@ -113,6 +113,7 @@
         }
         var handle_bar = 'stimuli/handle_wheel.png';
         var handle_nobar = 'stimuli/noBar_wheel.png';
+        var instruction = ['stimuli/instruction/page1.png', 'stimuli/instruction/page2.png', 'stimuli/instruction/page3.png']
         
          
 
@@ -132,20 +133,20 @@
         }
         // * instructions * //
         var general_inst_page1 = {
-            type: 'image-button-response',
-            stimulus: '<img src="stimuli/instruction/page1.png" style="width:80%">',
+            type: 'html-button-response',
+            stimulus: html='<img src="stimuli/instruction/page1.png" style="width:80%">',
             choices: ['Next'],
             data: {disp_type: general_inst_page1}          
         } 
         var general_inst_page2 = {
-            type: 'image-button-response',
-            stimulus: '<img src="stimuli/instruction/page2.png" style="width:80%">',
+            type: 'html-button-response',
+            stimulus: html='<img src="stimuli/instruction/page2.png" style="width:80%">',
             choices: ['Next'],
             data: {disp_type: general_inst_page2}           
         } 
         var general_inst_page3 = {
-            type: 'image-button-response',
-            stimulus: '<img src="stimuli/instruction/page3.png" style="width:80%">',
+            type: 'html-button-response',
+            stimulus: html='<img src="stimuli/instruction/page3.png" style="width:80%">',
             choices: ['Next'],
             data: {disp_type: general_inst_page3}          
         }         
@@ -382,7 +383,7 @@
         // ****** Start ***** //
         jsPsych.init({
             timeline: timeline,
-            preload_images: scenes    
+            preload_images: [scenes, instruction, handle_bar, handle_nobar]    
         });          
 
 
