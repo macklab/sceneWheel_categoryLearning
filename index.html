@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang = 'en'>
+    <head>
+        <title>Experiment - scene category</title>
+        <style>
+            #basic_arena {
+                position: relative;
+                margin: auto;              
+                left: 0;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                width: 1024px;
+                height: 768px;                
+                display: flex;
+                align-items: center;                
+                /* border: 1px solid grey; */
+            }                                   
+            #full_arena {   
+                position: absolute;                           
+                width: 100%;
+                height: 100%;
+                display: flex; 
+                align-items: center;
+                justify-content: center;                                      
+            }
+        </style>
+        
+        <script src='js_library/jspsych-6.1.0/jspsych.js'></script>        
+        <script src='js_library/jspsych-6.1.0/plugins/jspsych-html-keyboard-response.js'></script>
+        <script src='js_library/jspsych-6.1.0/plugins/jspsych-image-button-response.js'></script>
+        <script src='js_library/jspsych-6.1.0/plugins/jspsych-image-keyboard-response.js'></script>
+        <script src='js_library/jspsych-6.1.0/plugins/jspsych-html-button-response.js'></script>
+        <script src='js_library/jspsych-6.1.0/plugins/jspsych-html-button-response-custom.js'></script>
+        <script src='js_library/jspsych-6.1.0/plugins/jspsych-mouse-reconstruction.js'></script> 
+        <script src="js_library/underscore-min.js"></script>                  
+        <link href='js_library/jspsych-6.1.0/css/jspsych.css' rel='stylesheet' type="text/css">        
+    </head>
+    <body></body>
+
+    <script>
+
+        // * image host * //
+        var img_host = 'https://macklab.dev/resources/sceneWheel/validation_5radii/';
+
+        // * wheel info * //    
+        var prac_wheel = '00';    
+        var main_wheel = '01';        
+        var radius_pool = ['04', '08'];
+        var radius = _.sample(radius_pool, 1);
+
+        // * condition set up * //
+        var stim_set_main = _.range(0,360,10);
+        var stim_set_prac = _.range(0,360,60);
+        var random_value = _.sample(_.range(0,360),1);
+        var stim_set_main = _.map(stim_set_main, function(num){return (num+Number(random_value))%360});
+        var stim_set_prac = _.map(stim_set_prac, function(num){return (num+Number(random_value))%360});
+        var boundary_values_main = [stim_set_main[0],stim_set_main[18]];
+        var boundary_values_prac = [stim_set_prac[0],stim_set_prac[3]];
+        var category_A_main = stim_set_main.slice(1,18);
+        var category_B_main = stim_set_main.slice(19,36);
+        var category_A_prac = stim_set_main.slice(1,3);
+        var category_B_prac = stim_set_main.slice(4,6);
+        var category_label = ['A','B'];
+        var n_round_main = 5;
+        var n_block_main = 2;
+        var n_round_prac = 3;
+        var n_block_prac = 1;
+
+        var e_mat =[];
+        for(i=0; i<category_A_main.length; i++){
+            e_mat.push({
+                label: 'A', 
+                wheel_path: img_host+'Wheel'+main_wheel+'/wheel'+main_wheel+'_r'+radius+'/',
+                img_path: img_host+'Wheel'+main_wheel+'/wheel'+main_wheel+'_r'+radius+'/'+
+                            ("00000"+category_A_main[i]).slice(-6)+'.webp'})
+        }
+        for(i=0; i<category_B_main.length; i++){
+            e_mat.push({
+                label: 'B',
+                wheel_path: img_host+'Wheel'+main_wheel+'/wheel'+main_wheel+'_r'+radius+'/', 
+                img_path: img_host+'Wheel'+main_wheel+'/wheel'+main_wheel+'_r'+radius+'/'+
+                            ("00000"+category_B_main[i]).slice(-6)+'.webp'})
+        }
+        var p_mat =[];
+        for(i=0; i<category_A_prac.length; i++){
+            e_mat.push({
+                label: 'A', 
+                wheel_path: img_host+'Wheel'+prac_wheel+'/wheel'+prac_wheel+'_r'+radius+'/',
+                img_path: img_host+'Wheel'+prac_wheel+'/wheel'+prac_wheel+'_r'+radius+'/'+
+                            ("00000"+category_A_prac[i]).slice(-6)+'.webp'})
+        }
+        for(i=0; i<category_B_prac.length; i++){
+            e_mat.push({
+                label: 'B',
+                wheel_path: img_host+'Wheel'+prac_wheel+'/wheel'+prac_wheel+'_r'+radius+'/', 
+                img_path: img_host+'Wheel'+prac_wheel+'/wheel'+prac_wheel+'_r'+radius+'/'+
+                            ("00000"+category_B_prac[i]).slice(-6)+'.webp'})
+        }  
+        
+
+        //* preload stimuli *//       
+        var scenes = [];
+        for (i = 0; i < e_mat.length; i++) {            
+            scenes.push(e_mat[i].img_path);
+        }
+        for (i = 0; i < p_mat.length; i++) {            
+            scenes.push(p_mat[i].img_path);
+        }
+        var handle_bar = 'stimuli/handle_wheel.png';
+        var handle_nobar = 'stimuli/noBar_wheel.png';
+        
+         
+
+        // ********** displays ********** //
+        // * consent form * //
+        var consent_page = {
+            type: 'html-button-response',
+            stimulus: function(){                            
+                var html = 
+                '<p area-selected="font-size:15px;"> You must agree to the consent to participate in the experiment.</p>'+                          
+                '<embed src="stimuli/consent_online_credit.pdf" style="width:80vw; height:70vh;"></embed>'
+                return html;
+            },
+            choices: ['Agree'],        
+            data: {disp_type: 'consent_page'}   
+
+        }
+        // * instructions * //
+        var general_inst_page1 = {
+            type: 'image-button-response',
+            stimulus: '<img src="stimuli/instruction/page1.png" style="width:80%">',
+            choices: ['Next'],
+            data: {disp_type: general_inst_page1}          
+        } 
+        var general_inst_page2 = {
+            type: 'image-button-response',
+            stimulus: '<img src="stimuli/instruction/page2.png" style="width:80%">',
+            choices: ['Next'],
+            data: {disp_type: general_inst_page2}           
+        } 
+        var general_inst_page3 = {
+            type: 'image-button-response',
+            stimulus: '<img src="stimuli/instruction/page3.png" style="width:80%">',
+            choices: ['Next'],
+            data: {disp_type: general_inst_page3}          
+        }         
+        var categorization_inst = {
+            type:'html-button-response',
+            stimulus: function(){
+                var html = '<p><b>Categorization task</b><br>' + 
+                'In this session, you will see scene images and guess whether a scene belongs to A or B.<br>'+
+                'You will receive feedback after responding to each image.<br>'+
+                'Try to correctly categorize the scenes. You will repeat '+n_round_main+' rounds of this session.<br><br>'+
+                'Press the button to start. </p>'
+                return html;
+            },
+            choices: ['Start'],
+            data: {disp_type: 'categorization_inst'}
+        }       
+        var memory_inst = {
+            type: 'html-button-response',
+            stimulus: function(){
+                var html = '<p><b>Memory task</b><br><br>' + 
+                'The categorization task is done! Now move on to the memory task.<br>'+
+                'In this session, you will see a scene image and remember the image for a short interval.<br>'+
+                'After a interval, find the closest matched scene by moving the computer mouse.<br>'+
+                'You will repeat this trial '+e_mat.length*n_block+' times. There will be '+(n_block_main-1)+' breaks during the session.<br><br>'+                             
+                'Press the button to start.</p>'
+                return html;
+            },
+            choices: ['Start'],
+            data: {disp_type: 'memory_inst'}
+        }                   
+
+        //* categorization task *//       
+        var learning_display = {
+            type: 'image-button-response',
+            stimulus: jsPsych.timelineVariable('img_path'),             
+            choices: ['A', 'B'],                  
+            data: {
+                disp_type: 'learning_display',
+                answer: jsPsych.timelineVariable('label')
+            },
+            on_finish: function(data){                           
+                if(data.button_pressed == category_label.indexOf(data.answer)){
+                    data.correct = true;
+                } else{
+                    data.correct = false;
+                }
+            }
+        }
+        var feedback_display = {
+            type: 'html-keyboard-response',
+            stimulus: function(){
+                var last_trial_correct = jsPsych.data.get().last(1).values()[0].correct;  
+                if(last_trial_correct) {
+                    var fb_word = '<p><mark style="color:green; background:none">Correct!</mark></br>'         
+                } else {
+                    var fb_word = '<p><mark style="color:red; background:none">Wrong...</mark></br>'
+                }
+                return fb_word
+            },
+            choices: jsPsych.NO_KEYS,
+            trial_duration: 1000,
+            data: {disp_type: 'learning_feedback'}
+        }
+
+        // * memory task * //        
+        var fixation = { 
+            type: 'html-keyboard-response',
+            stimulus: html='<div id="basic_arena"><div id="full_arena" style="font-size:24px;">+</div></div>',
+            choices: jsPsych.NO_KEYS,
+            trial_duration: 1000,
+            data: {disp_type: 'fixation'}
+        }
+        var target_display = {
+            type: 'html-keyboard-response',
+            stimulus: function(){
+                var html='<div id="basic_arena"><div id="full_arena""><img src="'+
+                    jsPsych.timelineVariable('img_path', true)+' "></div></div>';
+                    return html;
+                },   
+            choices: jsPsych.NO_KEYS,
+            trial_duration: 1000,
+            data: {disp_type: 'test_target'}
+        }
+        var adjustment_display = {
+            type: 'mouse-reconstruction',
+            div_name: 'full_arena',            
+            starting_value: 360,
+            wheel_path: jsPsych.timelineVariable('wheel_path'),
+            image_size: 'height: 256px',
+            indicator_path: ['stimuli/noBar_wheel.png', 'stimuli/handle_wheel.png'],
+            indicator_size: 'height: 450px',  
+            wait_fix: 1000,          
+            data: {
+                disp_type: 'test-adjustment',
+                answer: jsPsych.timelineVariable('scene'),
+                similarity: jsPsych.timelineVariable('similarity'),
+                position: jsPsych.timelineVariable('position')
+            }            
+        }
+        
+        // ******* timeline components ******* // 
+        // practice              
+        var categorization_prac = {
+            timeline: [learning_display, feedback_display],
+            timeline_variables: p_mat,
+            randomize_order: true,
+            repetition: 3
+        }
+        var memory_prac = {
+            timeline: [fixation, target_display, adjustment_display],
+            timeline_variables: p_mat,
+            randomize_order: true
+        }
+        // main
+        for(r=0; r<n_round_main; r++){
+            this['categorization_main'+(r+1)] = {
+                timeline: [learning_display, feedback_display],
+                timeline_variables: e_mat,
+                randomize_order: true
+            }
+        }  
+        for(r=0; r<n_round_main; r++){               
+            this['main_round_end'+(r+1)] = {                
+                type: 'html-button-response',
+                stimulus: '<div style="font-size:20px;">Round '+(r+1)+' is done!<br>'+
+                    'Take a break and press the button to proceed.</div>',                    
+                choices: ['start'],
+                data: {disp_type: 'main_round_end'}
+            }                        
+        }            
+        
+        for(b=0; b<n_block_prac; b++){
+            this['memory_main'+(b+1)] = {
+                timeline: [fixation, target_display, adjustment_display],
+                timeline_variables: e_mat,
+                randomize_order: true
+            }
+        }   
+        for(b=0; b<n_block_prac; b++){           
+            this['main_block_end'+(b+1)] = {                
+                type: 'html-button-response',
+                stimulus: '<div style="font-size:20px;">Round '+(b+1)+' is done!<br>'+
+                    'Take a break and press the button to proceed.</div>',                    
+                choices: ['start'],
+                data: {disp_type: 'prac_block_done'}
+            }                      
+        } 
+
+        // 
+        // * save data * //
+        var save_data = {
+            type: 'html-keyboard-response',
+            stimulus: '<p>We are saving your data, please stay on this page.</p>',
+            choices: jsPsych.NO_KEYS,
+            trial_duration: 3000,
+            data: { // create confirmation code with data saving
+                conf_code: Math.floor(1000 + Math.random() * 9000)
+            },            
+            on_finish: function(){                
+                // get data values
+                var data = {experiment:"sceneWheel_categoryLearning",
+                            repo:"sceneWheel_categoryLearning",                          
+                            data:jsPsych.data.get().values(),
+                            browser_info:browser_info,
+                            interaction_data:jsPsych.data.getInteractionData().values(),
+                            exp_condition:e_mat}
+
+                // send data to savejs
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST','https://macklab-savejs.netlify.app/api/savejs');
+                xhr.setRequestHeader('Content-Type','application/json');
+                xhr.onload = function(){
+                  if(xhr.status==200){
+                    var response=JSON.parse(xhr.responseText);
+                    console.log(response.success);
+                  }
+                };
+                xhr.send(JSON.stringify(data));                                
+            }           
+        }
+             
+        // demographic page
+        var demographic_page = {
+            type: 'html-button-response',
+            stimulus: html='<p style="color: black; font-size: 20px;">'
+                +'You are done! Now we would like to collect your demographic information.</br>'
+                +'Click the <b>Demographic questions</b> below to complete the form.</br>'
+                +'While completing the form, please enter your full name (ideally the same one on Quercus) for the bonus mark.'
+                +'After submitting the form, comeback to this page and check out the debriefing letter!</br></br>'
+                +'<a href="https://redcap.utoronto.ca/surveys/index.php?s=DDT8ME9KFL&study_name=scene_wheel_category_learning" target="_blank">'
+                +'Demographic questions </a></br></br></p>',
+            choices: ['Go to the debriefing letter'], 
+            data: {disp_type: 'demographic-link'}        
+        }
+
+        // debriefing letter
+        var debrief_page = {
+            type: 'html-keyboard-response',
+            stimulus: function(){                            
+                var html = 
+                '<p area-selected="font-size:15px;"> Thank you for participating! You can leave this page.</p>'+                          
+                '<embed src="stimuli/debriefing.pdf" style="width:80vw; height:70vh;"></embed>'
+                return html;
+            },
+            choices: jsPsych.NO_KEYS,        
+            data: {disp_type: 'debriefing_page'}            
+        } 
+
+        // ********** timeline fill up ********** // 
+        timeline = [];
+        timeline.push(consent_page);
+        timeline.push(general_inst_page1);
+        timeline.push(general_inst_page2); 
+        timeline.push(categorization_prac);
+        timeline.push(categorization_inst);  
+        for (r=0; r<n_round; r++) {            
+            timeline.push(eval('categorization_main'+(r+1)));           
+            timeline.push(eval('main_round_end'+(r+1)));
+        }
+        timeline.push(general_inst_page3);
+        timeline.push(memory_prac);     
+        timeline.push(memory_inst);
+        for (b=0; b<n_block; b++) {            
+            timeline.push(eval('memory_main'+(b+1)));           
+            timeline.push(eval('main_block_end'+(b+1)));
+        }
+        timeline.push(save_data);
+        timeline.push(demographic_page);
+        timeline.push(debrief_page);
+        
+
+        // ****** Start ***** //
+        jsPsych.init({
+            timeline: timeline,
+            preload_images: scenes    
+        });          
+
+
+        
+    </script>
+</html>
