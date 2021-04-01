@@ -86,7 +86,7 @@
         }
         var p_mat =[];
         for(i=0; i<category_A_prac.length; i++){
-            e_mat.push({
+            p_mat.push({
                 label: category_label[0], 
                 wheel_path: img_host+'Wheel'+prac_wheel+'/wheel'+prac_wheel+'_r'+radius+'/',
                 scene_num: category_A_prac[i],
@@ -94,7 +94,7 @@
                             ("00000"+category_A_prac[i]).slice(-6)+'.webp'})
         }
         for(i=0; i<category_B_prac.length; i++){
-            e_mat.push({
+            p_mat.push({
                 label: category_label[1],
                 wheel_path: img_host+'Wheel'+prac_wheel+'/wheel'+prac_wheel+'_r'+radius+'/',
                 scene_num: category_B_prac[i], 
@@ -360,6 +360,10 @@
         // ********** timeline fill up ********** // 
         timeline = [];
         timeline.push(consent_page);
+        timeline.push({
+            type: 'fullscreen',
+            fullscreen_mode: true
+        });
         timeline.push(general_inst_page1);
         timeline.push(general_inst_page2); 
         timeline.push(categorization_prac);
@@ -377,6 +381,10 @@
         }
         timeline.push(save_data);
         timeline.push(demographic_page);
+        timeline.push({
+            type: 'fullscreen',
+            fullscreen_mode: false
+        });
         timeline.push(debrief_page);
         
 
