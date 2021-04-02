@@ -60,8 +60,10 @@
         var boundary_values_prac = [stim_set_prac[0],stim_set_prac[3]];
         var category_A_main = stim_set_main.slice(1,18);
         var category_B_main = stim_set_main.slice(19,36);
+        var category_distance_main = _.range(1,18,1);
         var category_A_prac = stim_set_main.slice(1,3);
         var category_B_prac = stim_set_main.slice(4,6);
+        var category_distance_prac = _.range(1,3,1);
         var category_label = ['A','B'];
         var n_round_main = 5;
         var n_block_main = 2;
@@ -74,14 +76,17 @@
                 label: category_label[0], 
                 wheel_path: img_host+'Wheel'+main_wheel+'/wheel'+main_wheel+'_r'+radius+'/',
                 scene_num: category_A_main[i],
+                distance: category_distance_main[i],
                 img_path: img_host+'Wheel'+main_wheel+'/wheel'+main_wheel+'_r'+radius+'/'+
-                            ("00000"+category_A_main[i]).slice(-6)+'.webp'})
+                            ("00000"+category_A_main[i]).slice(-6)+'.webp'})                
+                            
         }
         for(i=0; i<category_B_main.length; i++){
             e_mat.push({
                 label: category_label[1],
                 wheel_path: img_host+'Wheel'+main_wheel+'/wheel'+main_wheel+'_r'+radius+'/', 
                 scene_num: category_B_main[i],
+                distance: category_distance_main[i],
                 img_path: img_host+'Wheel'+main_wheel+'/wheel'+main_wheel+'_r'+radius+'/'+
                             ("00000"+category_B_main[i]).slice(-6)+'.webp'})
         }
@@ -91,6 +96,7 @@
                 label: category_label[0], 
                 wheel_path: img_host+'Wheel'+prac_wheel+'/wheel'+prac_wheel+'_r'+radius+'/',
                 scene_num: category_A_prac[i],
+                distance: category_distance_prac[i],
                 img_path: img_host+'Wheel'+prac_wheel+'/wheel'+prac_wheel+'_r'+radius+'/'+
                             ("00000"+category_A_prac[i]).slice(-6)+'.webp'})
         }
@@ -99,6 +105,7 @@
                 label: category_label[1],
                 wheel_path: img_host+'Wheel'+prac_wheel+'/wheel'+prac_wheel+'_r'+radius+'/',
                 scene_num: category_B_prac[i], 
+                distance: category_distance_prac[i],
                 img_path: img_host+'Wheel'+prac_wheel+'/wheel'+prac_wheel+'_r'+radius+'/'+
                             ("00000"+category_B_prac[i]).slice(-6)+'.webp'})
         }  
@@ -187,7 +194,8 @@
             choices: ['A', 'B'],                  
             data: {
                 disp_type: 'learning_display',
-                answer: jsPsych.timelineVariable('label')
+                answer: jsPsych.timelineVariable('label'),
+                distance: jsPsych.timelineVariable('distnace'),
             },
             on_finish: function(data){                           
                 if(data.button_pressed == category_label.indexOf(data.answer)){
@@ -244,7 +252,8 @@
             data: {
                 disp_type: 'test-adjustment',
                 answer: jsPsych.timelineVariable('scene_num'),
-                category: jsPsych.timelineVariable('label')
+                category: jsPsych.timelineVariable('label'),
+                distance: jsPsych.timelineVariable('distance'),
             }            
         }
         
