@@ -254,13 +254,13 @@
             timeline: [learning_display, feedback_display],
             timeline_variables: p_mat,
             randomize_order: true,
-            repetition: n_round_prac
+            repetition: Number(n_round_prac)
         }
         var memory_prac = {
             timeline: [fixation, target_display, adjustment_display],
             timeline_variables: p_mat,
             randomize_order: true,
-            repetition: n_block_prac
+            repetition: Number(n_block_prac)
         }
         // main
         for(r=0; r<n_round_main; r++){
