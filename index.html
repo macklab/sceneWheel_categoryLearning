@@ -160,7 +160,7 @@
             type:'html-button-response',
             stimulus: function(){
                 var html = '<p><b>Categorization task</b><br>' + 
-                'The practice trials are done! Now move on to the memory task.<br><br>'+
+                'The practice trials are done! Now move on to the main session.<br><br>'+
                 'Like the practice, you will see scene images and guess whether a scene belongs to A or B.<br>'+
                 'You will receive feedback after responding to each image.<br>'+
                 'Try to correctly categorize the scenes. You will repeat '+n_round_main+' rounds of this session.<br><br>'+
@@ -174,10 +174,10 @@
             type: 'html-button-response',
             stimulus: function(){
                 var html = '<p><b>Memory task</b><br><br>' + 
-                'The practice trials are done! Now move on to the memory task.<br>'+
+                'The practice trials are done! Now move on to the main session.<br>'+
                 'Like the practice, you will see a scene image and remember the image for a short interval.<br>'+
                 'After a interval, find the closest matched scene by moving the computer mouse.<br>'+
-                'You will repeat this trial '+e_mat.length*n_block_main+' times. There will be '+(n_block_main-1)+' breaks during the session.<br><br>'+                             
+                'You will repeat this trial '+e_mat.length*n_block_main+' times. There will be '+(n_block_main-1)+' break during the session.<br><br>'+                             
                 'Press the button to start.</p>'
                 return html;
             },
@@ -297,7 +297,7 @@
         for(b=0; b<n_block_main; b++){           
             this['main_block_end'+(b+1)] = {                
                 type: 'html-button-response',
-                stimulus: '<div style="font-size:20px;">Round '+(b+1)+' is done!<br>'+
+                stimulus: '<div style="font-size:20px;">Block '+(b+1)+' is done!<br>'+
                     'Take a break and press the button to proceed.</div>',                    
                 choices: ['start'],
                 data: {disp_type: 'prac_block_done'}
@@ -343,7 +343,7 @@
             stimulus: html='<p style="color: black; font-size: 20px;">'
                 +'You are done! Now we would like to collect your demographic information.</br>'
                 +'Click the <b>Demographic questions</b> below to complete the form.</br>'
-                +'While completing the form, please enter your full name (the same one on Quercus) for the bonus mark.'
+                +'While completing the form, please enter your full name (the same one on Quercus) for the bonus mark.<br>'
                 +'After submitting the form, come back to this page and check out the debriefing letter!</br></br>'
                 +'<a href="https://redcap.utoronto.ca/surveys/index.php?s=DDT8ME9KFL&study_name=scene_wheel_category_learning" target="_blank">'
                 +'Demographic questions </a></br></br></p>',
