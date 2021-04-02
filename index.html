@@ -66,9 +66,7 @@
         var category_distance_prac = _.range(1,3,1);
         var category_label = ['A','B'];
         var n_round_main = 5;
-        var n_block_main = 2;
-        var n_round_prac = 3;
-        var n_block_prac = 1;
+        var n_block_main = 2;        
 
         var e_mat =[];
         for(i=0; i<category_A_main.length; i++){
@@ -263,13 +261,12 @@
             timeline: [learning_display, feedback_display],
             timeline_variables: p_mat,
             randomize_order: true,
-            repetition: Number(n_round_prac)
+            repetition: 3
         }
         var memory_prac = {
             timeline: [fixation, target_display, adjustment_display],
             timeline_variables: p_mat,
-            randomize_order: true,
-            repetition: Number(n_block_prac)
+            randomize_order: true
         }
         // main
         for(r=0; r<n_round_main; r++){
