@@ -47,8 +47,8 @@
         // * wheel info * //    
         var prac_wheel = '00';    
         var main_wheel = '01';        
-        var radius_pool = ['04', '08'];
-        var radius = _.sample(radius_pool, 1);
+        // var radius_pool = ['04', '08'];
+        var radius = '04'; // _.sample(radius_pool, 1);
 
         // * condition set up * //
         var stim_set_main = _.range(0,360,10);
@@ -64,7 +64,7 @@
         var category_A_prac = stim_set_main.slice(1,3);
         var category_B_prac = stim_set_main.slice(4,6);
         var category_distance_prac = _.range(1,3,1);
-        var category_label = ['A','B'];
+        var category_label = ['e','i'];
         var n_round_main = 5;
         var n_block_main = 2;        
 
@@ -119,7 +119,7 @@
         }
         var handle_bar = 'stimuli/handle_wheel.png';
         var handle_nobar = 'stimuli/noBar_wheel.png';
-        var instruction = ['stimuli/instruction/page1.png', 'stimuli/instruction/page2.png', 'stimuli/instruction/page3.png']
+        var instruction = ['stimuli/instruction2/page1.png', 'stimuli/instruction2/page2.png', 'stimuli/instruction2/page3.png']
         
          
 
@@ -140,19 +140,19 @@
         // * instructions * //
         var general_inst_page1 = {
             type: 'html-button-response',
-            stimulus: html='<img src="stimuli/instruction/page1.png" style="height:80%">',
+            stimulus: html='<img src="stimuli/instruction2/page1.png" style="height:80%">',
             choices: ['Next'],
             data: {disp_type: 'general_inst_page1'}          
         } 
         var general_inst_page2 = {
             type: 'html-button-response',
-            stimulus: html='<img src="stimuli/instruction/page2.png" style="height:80%">',
+            stimulus: html='<img src="stimuli/instruction2/page2.png" style="height:80%">',
             choices: ['Next'],
             data: {disp_type: 'general_inst_page2'}           
         } 
         var general_inst_page3 = {
             type: 'html-button-response',
-            stimulus: html='<img src="stimuli/instruction/page3.png" style="height:80%">',
+            stimulus: html='<img src="stimuli/instruction2/page3.png" style="height:80%">',
             choices: ['Next'],
             data: {disp_type: 'general_inst_page3'}          
         }         
@@ -161,9 +161,9 @@
             stimulus: function(){
                 var html = '<p><b>Categorization task</b><br>' + 
                 'The practice trials are done! Now move on to the main session.<br><br>'+
-                'Like the practice, you will see scene images and guess whether a scene belongs to A or B.<br>'+
+                'Like the practice, you will see room images and guess whether the rooms belong to the unit 1 or 2.<br>'+
                 'You will receive feedback after responding to each image.<br>'+
-                'Try to correctly categorize the scenes. You will repeat '+n_round_main+' rounds of this session.<br><br>'+
+                'Try to respond as <i> accurately and quickly</i> as possible. You will repeat '+n_round_main+' rounds of this task.<br><br>'+
                 'Press the button to start. </p>'
                 return html;
             },
@@ -175,7 +175,7 @@
             stimulus: function(){
                 var html = '<p><b>Memory task</b><br><br>' + 
                 'The practice trials are done! Now move on to the main session.<br>'+
-                'Like the practice, you will see a scene image and remember the image for a short interval.<br>'+
+                'Like the practice, you will see a room image and remember the image for a short interval.<br>'+
                 'After a interval, find the closest matched scene by moving the computer mouse.<br>'+
                 'You will repeat this trial '+e_mat.length*n_block_main+' times. There will be '+(n_block_main-1)+' break during the session.<br><br>'+                             
                 'Press the button to start.</p>'
@@ -185,18 +185,20 @@
             data: {disp_type: 'memory_inst'}
         }                   
 
-        //* categorization task *//       
+        //* categorization task *//          
         var learning_display = {
-            type: 'image-button-response',
-            stimulus: jsPsych.timelineVariable('img_path'),             
-            choices: ['A', 'B'],                  
+            type: 'image-keyboard-response',
+            stimulus: jsPsych.timelineVariable('img_path'),  
+            prompt: '<p>Press "e" for the unit 1 and "i" for the unit 2.</p>',           
+            choices: ['e', 'i'],                  
             data: {
                 disp_type: 'learning_display',
                 answer: jsPsych.timelineVariable('label'),
                 distance: jsPsych.timelineVariable('distance'),
             },
-            on_finish: function(data){                           
-                if(data.button_pressed == category_label.indexOf(data.answer)){
+            on_finish: function(data){ 
+                var resp = [69,73].indexOf(data.key_press);  // keycode 69 = e, 73 = i                     
+                if(resp == category_label.indexOf(data.answer)){
                     data.correct = true;
                 } else{
                     data.correct = false;
@@ -208,9 +210,9 @@
             stimulus: function(){
                 var last_trial_correct = jsPsych.data.get().last(1).values()[0].correct;  
                 if(last_trial_correct) {
-                    var fb_word = '<p><mark style="color:green; background:none">Correct!</mark></br>'         
+                    var fb_word = '<p><mark style="color:green; background:none; font-size:24pt;">Correct!</mark></br>'         
                 } else {
-                    var fb_word = '<p><mark style="color:red; background:none">Wrong...</mark></br>'
+                    var fb_word = '<p><mark style="color:red; background:none; font-size:24pt;">Wrong...</mark></br>'
                 }
                 return fb_word
             },
@@ -235,7 +237,7 @@
                     return html;
                 },   
             choices: jsPsych.NO_KEYS,
-            trial_duration: 1000,
+            trial_duration: 200,
             data: {disp_type: 'test_target'}
         }
         var adjustment_display = {
@@ -342,10 +344,9 @@
             type: 'html-button-response',
             stimulus: html='<p style="color: black; font-size: 20px;">'
                 +'You are done! Now we would like to collect your demographic information.</br>'
-                +'Click the <b>Demographic questions</b> below to complete the form.</br>'
-                +'While completing the form, please enter your full name (the same one on Quercus) for the bonus mark.<br>'
+                +'Click the <b>Demographic questions</b> below to complete the form.</br>'                
                 +'After submitting the form, come back to this page and check out the debriefing letter!</br></br>'
-                +'<a href="https://redcap.utoronto.ca/surveys/index.php?s=DDT8ME9KFL&study_name=scene_wheel_category_learning" target="_blank">'
+                +'<a href="https://redcap.utoronto.ca/surveys/index.php?s=DDT8ME9KFL&study_name=scene_wheel_category_learning_200ms" target="_blank">'
                 +'Demographic questions </a></br></br></p>',
             choices: ['Go to the debriefing letter'], 
             data: {disp_type: 'demographic-link'}        
@@ -379,7 +380,7 @@
             timeline.push(eval('categorization_main'+(r+1)));           
             timeline.push(eval('main_round_end'+(r+1)));
         }
-        timeline.push(general_inst_page3);
+        // timeline.push(general_inst_page3);
         timeline.push(memory_prac);     
         timeline.push(memory_inst);
         for (b=0; b<n_block_main; b++) {            
