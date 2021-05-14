@@ -368,26 +368,26 @@
 
         // ********** timeline fill up ********** // 
         timeline = [];
-        // timeline.push(consent_page);
-        // timeline.push({
-        //     type: 'fullscreen',
-        //     fullscreen_mode: true
-        // });
-        // timeline.push(general_inst_page1);
-        // timeline.push(general_inst_page2); 
-        // timeline.push(categorization_prac);
-        // timeline.push(categorization_inst);  
-        // for (r=0; r<n_round_main; r++) {            
-        //     timeline.push(eval('categorization_main'+(r+1)));           
-        //     timeline.push(eval('main_round_end'+(r+1)));
-        // }
-        // timeline.push(general_inst_page3);
-        // timeline.push(memory_prac);     
-        // timeline.push(memory_inst);
-        // for (b=0; b<n_block_main; b++) {            
-        //     timeline.push(eval('memory_main'+(b+1)));           
-        //     timeline.push(eval('main_block_end'+(b+1)));
-        // }
+        timeline.push(consent_page);
+        timeline.push({
+            type: 'fullscreen',
+            fullscreen_mode: true
+        });
+        timeline.push(general_inst_page1);
+        timeline.push(general_inst_page2); 
+        timeline.push(categorization_prac);
+        timeline.push(categorization_inst);  
+        for (r=0; r<n_round_main; r++) {            
+            timeline.push(eval('categorization_main'+(r+1)));           
+            timeline.push(eval('main_round_end'+(r+1)));
+        }
+        timeline.push(general_inst_page3);
+        timeline.push(memory_prac);     
+        timeline.push(memory_inst);
+        for (b=0; b<n_block_main; b++) {            
+            timeline.push(eval('memory_main'+(b+1)));           
+            timeline.push(eval('main_block_end'+(b+1)));
+        }
         timeline.push(save_data);
         timeline.push(demographic_page);
         timeline.push({
