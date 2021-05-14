@@ -161,9 +161,9 @@
             stimulus: function(){
                 var html = '<p><b>Categorization task</b><br>' + 
                 'The practice trials are done! Now move on to the main session.<br><br>'+
-                'Like the practice, you will see room images and guess whether the rooms belong to the unit 1 or 2.<br>'+
+                'Like the practice, you will see room images and guess whether the rooms are type 1 or 2.<br>'+
                 'You will receive feedback after responding to each image.<br>'+
-                'Try to respond as <i> accurately and quickly</i> as possible. You will repeat '+n_round_main+' rounds of this task.<br><br>'+
+                'Try to respond as <i><u> accurately and quickly</u></i> as possible. You will repeat '+n_round_main+' rounds of this task.<br><br>'+
                 'Press the button to start. </p>'
                 return html;
             },
@@ -189,7 +189,7 @@
         var learning_display = {
             type: 'image-keyboard-response',
             stimulus: jsPsych.timelineVariable('img_path'),  
-            prompt: '<p>Press "e" for the unit 1 and "i" for the unit 2.</p>',           
+            prompt: '<p>Press "e" for type 1 and "i" for type 2.</p>',           
             choices: ['e', 'i'],                  
             data: {
                 disp_type: 'learning_display',
