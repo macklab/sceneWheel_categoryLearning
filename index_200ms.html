@@ -279,7 +279,7 @@
             this['main_round_end'+(r+1)] = {                
                 type: 'html-button-response',
                 stimulus: '<div style="font-size:20px;">Round '+(r+1)+' is done!<br>'+
-                    'Now you have'+(n_round_main-r+1)+' more round(s) to go.<br>'+
+                    'Now you have '+(n_round_main-(r+1))+' more round(s) to go.<br>'+
                     'Take a break and press the button to proceed.</div>',                    
                 choices: ['start'],
                 data: {disp_type: 'main_round_end'}
@@ -297,7 +297,7 @@
             this['main_block_end'+(b+1)] = {                
                 type: 'html-button-response',
                 stimulus: '<div style="font-size:20px;">Block '+(b+1)+' is done!<br>'+
-                    'Now you have '+(n_block_main-b+1)+' more block(s) to go.<br>'+
+                    'Now you have '+(n_block_main-(b+1))+' more block(s) to go.<br>'+
                     'Take a break and press the button to proceed.</div>',                    
                 choices: ['start'],
                 data: {disp_type: 'main_block_done'}
