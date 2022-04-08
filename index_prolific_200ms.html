@@ -354,40 +354,41 @@
             type: 'survey-html-form',
             preamble: '<p><b>Before starting, we would like to collect the basic information below.</b></p>',
             html: '<p style="font-size:12pt;"> Gender: '+
-                '<input name="gender" type="radio" value="male"  /><label for="male">Male</label>'+
-                '<input name="gender" type="radio" value="female"  /><label for="female">Female</label>'+
-                '<input name="gender" type="radio" value="other"  /><label for="other">Other</label></br>'+
+                '<input name="gender" type="radio" value="male"  required/><label for="male">Male</label>'+
+                '<input name="gender" type="radio" value="female"  required/><label for="female">Female</label>'+
+                '<input name="gender" type="radio" value="other"  required/><label for="other">Other</label></br>'+
                 // age
                 'Age: <input name="age" type="text"/></br>'+
                 // handedness
                 'Handedness: '+
-                '<input name="hand" type="radio" value="right"  /><label for="right">Right</label>'+
-                '<input name="hand" type="radio" value="left"  /><label for="left">Left</label>'+
-                '<input name="hand" type="radio" value="ambidextrous"  /><label for="ambidextrous">Ambidextrous</label></br></br>'+
+                '<input name="hand" type="radio" value="right"  required/><label for="right">Right</label>'+
+                '<input name="hand" type="radio" value="left"  required/><label for="left">Left</label>'+
+                '<input name="hand" type="radio" value="ambidextrous"  required/><label for="ambidextrous">Ambidextrous</label></br></br>'+
                 'Please respond to the following quetions by checking "Yes" or "No": </br>'+
                 // lenses
                 '</br>Do you wear corrective lenses?: '+
-                '<input name="lense" type="radio" value="yes" /><label for="yes">Yes</label>'+
-                '<input name="lense" type="radio" value="no" /><label for="no">No</label>'+
+                '<input name="lense" type="radio" value="yes" required/><label for="yes">Yes</label>'+
+                '<input name="lense" type="radio" value="no" required/><label for="no">No</label>'+
                 '</br>If yes, specify glasses or contacts:  <input name="lensetype" type="text" /></br>'+                
                 // hearing aids
                 '</br>Do you use hearing aid?: '+
-                '<input name="hear" type="radio" value="yes" /><label for="yes">Yes</label>'+
-                '<input name="hear" type="radio" value="no" /><label for="no">No</label>'+
+                '<input name="hear" type="radio" value="yes" required/><label for="yes">Yes</label>'+
+                '<input name="hear" type="radio" value="no" required/><label for="no">No</label>'+
                 '</br>If yes, please specify what kinds: <input name="hearaidtype" type="text" /></br>'+
                 // brain malfunction
                 '</br>Do you have any known brain malfunctions?: '+
-                '<input name="brain" type="radio" value="yes" /><label for="yes">Yes</label>'+
-                '<input name="brain" type="radio" value="no" /><label for="no">No</label>'+
+                '<input name="brain" type="radio" value="yes" required/><label for="yes">Yes</label>'+
+                '<input name="brain" type="radio" value="no" required/><label for="no">No</label>'+
                 '</br>If yes, please specify type and location: <input name="brainmaltype" type="text" /></br>'+
                 // color blindness
                 '</br>Do you experience color blindness?: '+
-                '<input name="color" type="radio" value="yes" /><label for="yes">Yes</label>'+
-                '<input name="color" type="radio" value="no" /><label for="no">No</label>'+
+                '<input name="color" type="radio" value="yes" required/><label for="yes">Yes</label>'+
+                '<input name="color" type="radio" value="no" required/><label for="no">No</label></br>'+
                 // neurological conditions
                 '</br>Do you have (or have you had) any neurological conditions?: '+
-                '<input name="neuro" type="radio" value="yes" /><label for="yes">Yes</label>'+
-                '<input name="neuro" type="radio" value="no" /><label for="no">No</label></br></p>',
+                '<input name="neuro" type="radio" value="yes" required/><label for="yes">Yes</label>'+
+                '<input name="neuro" type="radio" value="no" required/><label for="no">No</label>'+
+                '</br>If yes, please specify type and location: <input name="brainmaltype" type="text" /></br></p>',
             data: {
                 disp_type: 'demographic_info'
             }
