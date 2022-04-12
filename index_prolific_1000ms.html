@@ -244,7 +244,7 @@
                     return html;
                 },   
             choices: jsPsych.NO_KEYS,
-            trial_duration: 200,
+            trial_duration: 1000,
             data: {disp_type: 'test_target'}
         }
         var adjustment_display = {
@@ -328,7 +328,7 @@
                 var data = {experiment:"sceneWheel_categoryLearning_prolific",
                             repo:"sceneWheel_categoryLearning_prolific",                          
                             data:jsPsych.data.get().values(),
-                            display_duration:200,
+                            display_duration:1000,
                             interaction_data:jsPsych.data.getInteractionData().values(),
                             exp_condition:e_mat,
                             current_url: window.location.href}
