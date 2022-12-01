@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang = 'en'>
+    <head>
+        <title>Experiment - scene category</title>
+        <style>
+            #basic_arena {
+                position: relative;
+                margin: auto;              
+                left: 0;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                width: 1024px;
+                height: 768px;                
+                display: flex;
+                align-items: center;
+            }                                   
+            #full_arena {   
+                position: absolute;                           
+                width: 100%;
+                height: 100%;
+                display: flex; 
+                align-items: center;
+                justify-content: center;                                      
+            }
+        </style>
+        
+        <script src='js_library/jspsych-6.1.0/jspsych.js'></script>        
+        <script src="js_library/jspsych-6.1.0/plugins/jspsych-fullscreen.js"></script>
+        <script src='js_library/jspsych-6.1.0/plugins/jspsych-html-keyboard-response.js'></script>
+        <script src='js_library/jspsych-6.1.0/plugins/jspsych-image-button-response.js'></script>
+        <script src='js_library/jspsych-6.1.0/plugins/jspsych-image-keyboard-response.js'></script>
+        <script src='js_library/jspsych-6.1.0/plugins/jspsych-html-button-response.js'></script>
+        <script src='js_library/jspsych-6.1.0/plugins/jspsych-mouse-reconstruction.js'></script> 
+        <script src="js_library/jspsych-6.1.0/plugins/jspsych-survey-html-form.js"></script>
+        <script src="js_library/underscore-min.js"></script>                  
+        <link href='js_library/jspsych-6.1.0/css/jspsych.css' rel='stylesheet' type="text/css">        
+    </head>
+    <body></body>
+
+    <script>
+        
+        // * image host * //
+        var img_host = 'https://macklab.dev/resources/sceneWheel/validation_5radii/';
+
+        // * wheel info * //    
+        var prac_wheel = '00';    
+        var main_wheel = '01';       
+        var radius = '04';
+
+        // * condition set up * //
+        var stim_set_main = _.range(0,360,10);
+        var stim_set_prac = _.range(0,360,60);
+        var random_value = _.sample(_.range(0,360),1);
+        var stim_set_main = _.map(stim_set_main, function(num){return (num+Number(random_value))%360});
+        var stim_set_prac = _.map(stim_set_prac, function(num){return (num+Number(random_value))%360});
+        var boundary_values_main = [stim_set_main[0],stim_set_main[18]];
+        var boundary_values_prac = [stim_set_prac[0],stim_set_prac[3]];
+        var category_A_main = stim_set_main.slice(1,18);
+        var category_B_main = stim_set_main.slice(19,36);
+        var category_distance_main = _.range(1,18,1);
+        var category_A_prac = stim_set_main.slice(1,3);
+        var category_B_prac = stim_set_main.slice(4,6);
+        var category_distance_prac = _.range(1,3,1);
+        var category_label = ['e','i'];
+        var n_round_main = 5;
+        var n_block_main = 2;        
+
+        var e_mat =[];
+        for(i=0; i<category_A_main.length; i++){
+            e_mat.push({
+                label: category_label[0], 
+                wheel_path: img_host+'Wheel'+main_wheel+'/wheel'+main_wheel+'_r'+radius+'/',
+                scene_num: category_A_main[i],
+                distance: category_distance_main[i],
+                img_path: img_host+'Wheel'+main_wheel+'/wheel'+main_wheel+'_r'+radius+'/'+
+                            ("00000"+category_A_main[i]).slice(-6)+'.webp'})                
+                            
+        }
+        for(i=0; i<category_B_main.length; i++){
+            e_mat.push({
+                label: category_label[1],
+                wheel_path: img_host+'Wheel'+main_wheel+'/wheel'+main_wheel+'_r'+radius+'/', 
+                scene_num: category_B_main[i],
+                distance: category_distance_main[i],
+                img_path: img_host+'Wheel'+main_wheel+'/wheel'+main_wheel+'_r'+radius+'/'+
+                            ("00000"+category_B_main[i]).slice(-6)+'.webp'})
+        }
+        var p_mat =[];
+        for(i=0; i<category_A_prac.length; i++){
+            p_mat.push({
+                label: category_label[0], 
+                wheel_path: img_host+'Wheel'+prac_wheel+'/wheel'+prac_wheel+'_r'+radius+'/',
+                scene_num: category_A_prac[i],
+                distance: category_distance_prac[i],
+                img_path: img_host+'Wheel'+prac_wheel+'/wheel'+prac_wheel+'_r'+radius+'/'+
+                            ("00000"+category_A_prac[i]).slice(-6)+'.webp'})
+        }
+        for(i=0; i<category_B_prac.length; i++){
+            p_mat.push({
+                label: category_label[1],
+                wheel_path: img_host+'Wheel'+prac_wheel+'/wheel'+prac_wheel+'_r'+radius+'/',
+                scene_num: category_B_prac[i], 
+                distance: category_distance_prac[i],
+                img_path: img_host+'Wheel'+prac_wheel+'/wheel'+prac_wheel+'_r'+radius+'/'+
+                            ("00000"+category_B_prac[i]).slice(-6)+'.webp'})
+        }  
+        
+
+        //* preload stimuli *//       
+        var scenes = [];
+        for (i = 0; i < e_mat.length; i++) {            
+            scenes.push(e_mat[i].img_path);
+        }
+        for (i = 0; i < p_mat.length; i++) {            
+            scenes.push(p_mat[i].img_path);
+        }
+        var handle_bar = 'stimuli/handle_wheel.png';
+        var handle_nobar = 'stimuli/noBar_wheel.png';
+        var instruction = ['stimuli/instruction2/page1.png', 'stimuli/instruction2/page2.png', 'stimuli/instruction2/page3.png']
+        
+         
+
+        // ********** displays ********** //        
+        // * instructions * //
+        var general_inst_page1 = {
+            type: 'html-button-response',
+            stimulus: html='<img src="stimuli/instruction2/page1.png" style="height:80%">',
+            choices: ['Next'],
+            data: {disp_type: 'general_inst_page1'}          
+        } 
+        var general_inst_page2 = {
+            type: 'html-button-response',
+            stimulus: html='<img src="stimuli/instruction2/page2.png" style="height:80%">',
+            choices: ['Next'],
+            data: {disp_type: 'general_inst_page2'}           
+        } 
+        var general_inst_page3 = {
+            type: 'html-button-response',
+            stimulus: html='<img src="stimuli/instruction2/page3.png" style="height:80%">',
+            choices: ['Next'],
+            data: {disp_type: 'general_inst_page3'}          
+        }         
+        var categorization_inst = {
+            type:'html-button-response',
+            stimulus: function(){
+                var html = '<p><b>Categorization task</b><br>' + 
+                'The practice trials are done! Now move on to the main session.<br><br>'+
+                'Like the practice, you will see room images and guess whether the rooms are type 1 or 2.<br>'+
+                'You will receive feedback after responding to each image.<br>'+
+                'Try to respond as <i><u> accurately and quickly</u></i> as possible. You will repeat '+n_round_main+' rounds of this task.<br><br>'+
+                'Press the button to start. </p>'
+                return html;
+            },
+            choices: ['Start'],
+            data: {disp_type: 'categorization_inst'}
+        }       
+        var memory_inst = {
+            type: 'html-button-response',
+            stimulus: function(){
+                var html = '<p><b>Memory task</b><br><br>' + 
+                'The practice trials are done! Now move on to the main session.<br>'+
+                'Like the practice, you will see a room image and remember the image for a short interval.<br>'+
+                'After a interval, find the closest matched scene by moving the computer mouse.<br>'+
+                'You will repeat this trial '+e_mat.length*n_block_main+' times. There will be '+(n_block_main-1)+' break during the session.<br><br>'+                             
+                'Press the button to start.</p>'
+                return html;
+            },
+            choices: ['Start'],
+            data: {disp_type: 'memory_inst'}
+        }                   
+
+        //* categorization task *//          
+        var learning_display = {
+            type: 'image-keyboard-response',
+            stimulus: jsPsych.timelineVariable('img_path'),  
+            prompt: '<p>Press "e" for type 1 and "i" for type 2.</p>',           
+            choices: ['e', 'i'],                  
+            data: {
+                disp_type: 'learning_display',
+                answer: jsPsych.timelineVariable('label'),
+                distance: jsPsych.timelineVariable('distance'),
+            },
+            on_finish: function(data){ 
+                var resp = [69,73].indexOf(data.key_press);  // keycode 69 = e, 73 = i                     
+                if(resp == category_label.indexOf(data.answer)){
+                    data.correct = true;
+                } else{
+                    data.correct = false;
+                }
+            }
+        }
+        var feedback_display = {
+            type: 'html-keyboard-response',
+            stimulus: function(){
+                var last_trial_correct = jsPsych.data.get().last(1).values()[0].correct;  
+                if(last_trial_correct) {
+                    var fb_word = '<p><mark style="color:green; background:none; font-size:24pt;">Correct!</mark></br>'         
+                } else {
+                    var fb_word = '<p><mark style="color:red; background:none; font-size:24pt;">Wrong...</mark></br>'
+                }
+                return fb_word
+            },
+            choices: jsPsych.NO_KEYS,
+            trial_duration: 1000,
+            data: {disp_type: 'learning_feedback'}
+        }
+
+        // * memory task * //        
+        var fixation = { 
+            type: 'html-keyboard-response',
+            stimulus: html='<div id="basic_arena"><div id="full_arena" style="font-size:24px;">+</div></div>',
+            choices: jsPsych.NO_KEYS,
+            trial_duration: 1000,
+            data: {disp_type: 'fixation'}
+        }
+        var target_display = {
+            type: 'html-keyboard-response',
+            stimulus: function(){
+                var html='<div id="basic_arena"><div id="full_arena""><img src="'+
+                    jsPsych.timelineVariable('img_path', true)+' "></div></div>';
+                    return html;
+                },   
+            choices: jsPsych.NO_KEYS,
+            trial_duration: 200,
+            data: {disp_type: 'test_target'}
+        }
+        var adjustment_display = {
+            type: 'mouse-reconstruction',
+            div_name: 'full_arena',            
+            starting_value: 360,
+            wheel_path: jsPsych.timelineVariable('wheel_path'),
+            image_size: 'height: 256px',
+            indicator_path: ['stimuli/noBar_wheel.png', 'stimuli/handle_wheel.png'],
+            indicator_size: 'height: 450px',  
+            wait_fix: 1000,          
+            data: {
+                disp_type: 'test-adjustment',
+                answer: jsPsych.timelineVariable('scene_num'),
+                category: jsPsych.timelineVariable('label'),
+                distance: jsPsych.timelineVariable('distance'),
+            }            
+        }
+        
+        // ******* timeline components ******* // 
+        // practice              
+        var categorization_prac = {
+            timeline: [learning_display, feedback_display],
+            timeline_variables: p_mat,
+            repetitions: 3,
+            randomize_order: true
+            
+        }
+        var memory_prac = {
+            timeline: [fixation, target_display, adjustment_display],
+            timeline_variables: p_mat,
+            randomize_order: true
+        }
+        // main
+        for(r=0; r<n_round_main; r++){
+            this['categorization_main'+(r+1)] = {
+                timeline: [learning_display, feedback_display],
+                timeline_variables: e_mat,
+                randomize_order: true
+            }
+        }  
+        for(r=0; r<n_round_main; r++){               
+            this['main_round_end'+(r+1)] = {                
+                type: 'html-button-response',
+                stimulus: '<div style="font-size:20px;">Round '+(r+1)+' is done!<br>'+
+                    'Now you have '+(n_round_main-(r+1))+' more round(s) to go.<br>'+
+                    'Take a break and press the button to proceed.</div>',                    
+                choices: ['start'],
+                data: {disp_type: 'main_round_end'}
+            }                        
+        }            
+        
+        for(b=0; b<n_block_main; b++){
+            this['memory_main'+(b+1)] = {
+                timeline: [fixation, target_display, adjustment_display],
+                timeline_variables: e_mat,
+                randomize_order: true
+            }
+        }   
+        for(b=0; b<n_block_main; b++){           
+            this['main_block_end'+(b+1)] = {                
+                type: 'html-button-response',
+                stimulus: '<div style="font-size:20px;">Block '+(b+1)+' is done!<br>'+
+                    'Now you have '+(n_block_main-(b+1))+' more block(s) to go.<br>'+
+                    'Take a break and press the button to proceed.</div>',                    
+                choices: ['start'],
+                data: {disp_type: 'main_block_done'}
+            }                      
+        }        
+        
+        
+        // ********** timeline fill up ********** // 
+        timeline = [];
+        timeline.push({
+            type: 'fullscreen',
+            fullscreen_mode: true,
+            data:{disp_type: 'fullscreen-in'}
+        });
+        timeline.push(general_inst_page1);
+        timeline.push(general_inst_page2); 
+        timeline.push(categorization_prac);
+        timeline.push(categorization_inst);  
+        for (r=0; r<n_round_main; r++) {            
+            timeline.push(eval('categorization_main'+(r+1)));           
+            timeline.push(eval('main_round_end'+(r+1)));
+        }
+        timeline.push(general_inst_page3);
+        timeline.push(memory_prac);     
+        timeline.push(memory_inst);
+        for (b=0; b<n_block_main; b++) {            
+            timeline.push(eval('memory_main'+(b+1)));           
+            timeline.push(eval('main_block_end'+(b+1)));
+        }          
+        timeline.push({
+            type: 'fullscreen',
+            fullscreen_mode: false,
+            data:{disp_type: 'fullscreen-out'}
+        });    
+
+        // ****** Start ***** //
+        jsPsych.init({
+            timeline: timeline,
+            preload_images: [scenes, instruction, handle_bar, handle_nobar]
+        });          
+
+
+        
+    </script>
+</html>
